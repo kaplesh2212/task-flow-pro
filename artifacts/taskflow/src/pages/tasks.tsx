@@ -152,6 +152,10 @@ export default function Tasks() {
             queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
             toast.success("Task updated");
             setIsDialogOpen(false);
+          },
+          onError: (err: any) => {
+            console.error("Update task error:", err);
+            toast.error(err.message || "Failed to update task");
           }
         }
       );
@@ -164,6 +168,10 @@ export default function Tasks() {
             queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
             toast.success("Task created");
             setIsDialogOpen(false);
+          },
+          onError: (err: any) => {
+            console.error("Create task error:", err);
+            toast.error(err.message || "Failed to create task");
           }
         }
       );
@@ -189,6 +197,10 @@ export default function Tasks() {
             sfx.click();
           }
         },
+        onError: (err: any) => {
+          console.error("Toggle task error:", err);
+          toast.error(err.message || "Failed to toggle task");
+        }
       },
     );
   };
@@ -203,6 +215,10 @@ export default function Tasks() {
           toast.success("Task deleted");
           sfx.delete();
         },
+        onError: (err: any) => {
+          console.error("Delete task error:", err);
+          toast.error(err.message || "Failed to delete task");
+        }
       },
     );
   };
