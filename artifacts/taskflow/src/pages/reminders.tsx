@@ -127,6 +127,10 @@ export default function Reminders() {
             sfx.pop();
             setIsDialogOpen(false);
           },
+          onError: (err: any) => {
+            console.error("Update reminder error:", err);
+            toast.error(err.message || "Failed to update reminder");
+          },
         },
       );
     } else {
@@ -146,6 +150,10 @@ export default function Reminders() {
               message: `Scheduled for ${friendlyTime}${data.repeat !== "none" ? ` • repeats ${data.repeat}` : ""}`,
             });
           },
+          onError: (err: any) => {
+            console.error("Create reminder error:", err);
+            toast.error(err.message || "Failed to create reminder");
+          },
         },
       );
     }
@@ -160,6 +168,10 @@ export default function Reminders() {
           queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
           toast.success("Reminder deleted");
           sfx.delete();
+        },
+        onError: (err: any) => {
+          console.error("Delete reminder error:", err);
+          toast.error(err.message || "Failed to delete reminder");
         },
       },
     );
