@@ -27,18 +27,27 @@ app.use(
 );
 const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
 app.use(cors({
-  origin: process.env.NODE_ENV === "production" ? allowedOrigins : "*"
+  origin: (process.env.NODE_ENV === "production" && allowedOrigins.length > 0) ? allowedOrigins : "*"
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 
-// Global Error Handler to prevent stack trace leaks
+// Global Error Handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  logger.error({ err }, "Unhandled application error");
-  (res as any).status(err.status || 500).json({
-    error: process.env.NODE_ENV === "production" ? "Internal Server Error" : err.message
+  // Use both pino and console for maximum visibility in various environments
+  logger.error({ err, url: req.url, method: req.method }, "Unhandled application error");
+  console.error("[API Error]", err);
+
+  const status = err.status || 500;
+  const message = (process.env.NODE_ENV === "production" && !process.env.DEBUG_ERRORS) 
+    ? "Internal Server Error" 
+    : err.message || "Unknown Error";
+
+  res.status(status).json({
+    error: message,
+    stack: process.env.NODE_ENV === "production" ? undefined : err.stack
   });
 });
 
