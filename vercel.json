@@ -13,5 +13,5 @@
     }
   ],
   "outputDirectory": "public_dist",
-  "buildCommand": "pnpm run vercel-build"
+  "buildCommand": "pnpm -w run vercel-build"
 }
