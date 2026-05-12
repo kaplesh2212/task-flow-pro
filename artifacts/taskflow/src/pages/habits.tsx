@@ -120,6 +120,10 @@ export default function Habits() {
             queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
             toast.success("Habit updated");
             setIsDialogOpen(false);
+          },
+          onError: (err: any) => {
+            console.error("Update habit error:", err);
+            toast.error(err.message || "Failed to update habit");
           }
         }
       );
@@ -132,6 +136,10 @@ export default function Habits() {
             queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
             toast.success("Habit created");
             setIsDialogOpen(false);
+          },
+          onError: (err: any) => {
+            console.error("Create habit error:", err);
+            toast.error(err.message || "Failed to create habit");
           }
         }
       );
@@ -160,6 +168,10 @@ export default function Habits() {
             icon: <Flame className="h-4 w-4 text-orange-500" />,
           });
         },
+        onError: (err: any) => {
+          console.error("Check-in habit error:", err);
+          toast.error(err.message || "Failed to check in");
+        }
       },
     );
   };
@@ -174,6 +186,10 @@ export default function Habits() {
           toast.success("Habit deleted");
           sfx.delete();
           if (selectedHabitId === id) setSelectedHabitId(null);
+        },
+        onError: (err: any) => {
+          console.error("Delete habit error:", err);
+          toast.error(err.message || "Failed to delete habit");
         }
       }
     );
