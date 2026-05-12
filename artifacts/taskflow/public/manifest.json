@@ -1,0 +1,17 @@
+{
+  "name": "Infinitodo",
+  "short_name": "Infinitodo",
+  "description": "To Do List, Habit Tracker & Reminder App",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#1db4a7",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

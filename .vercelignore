@@ -1,0 +1,33 @@
+# Node dependencies
+node_modules
+
+# Build outputs
+dist
+.next
+out
+
+# Development tool files
+.agents
+.local
+.replit
+.replitignore
+find_history.js
+.git
+.github
+.vscode
+.idea
+
+# Keep these (Used by the app build)
+# attached_assets 
+
+# Ignore other subprojects not needed for frontend build
+lib/db
+lib/api-zod
+lib/api-server
+scripts
+
+# Temporary files
+*.log
+.DS_Store
+tmp
+temp

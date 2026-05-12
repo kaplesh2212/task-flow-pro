@@ -1,0 +1,132 @@
+You already have a working To-Do List + Habit Tracker web app.
+
+DO NOT change or break any existing functionality.
+DO NOT modify existing logic of tasks or habits.
+ONLY enhance the following sections carefully:
+
+========================
+🔔 1. REMINDER SYSTEM UPGRADE
+========================
+
+Upgrade the existing reminder feature with:
+
+- Ask notification permission (if not already granted)
+- Allow user to set:
+  - Title
+  - Description
+  - Date
+  - Time
+
+When reminder triggers:
+
+1. Show FULL SCREEN custom notification modal:
+   - Dark overlay background
+   - Center card UI with:
+     - Title (bold)
+     - Description
+     - Date & time
+   - Buttons:
+     ✔ "Thanks" → mark as completed
+     ✔ "Close" → dismiss
+
+2. Trigger browser notification using Notification API
+
+3. If tab is minimized:
+   - Use visibilitychange event
+   - Show reminder when user comes back
+
+4. Add smooth animation:
+   - Fade + scale popup
+   - Glow effect
+
+IMPORTANT:
+- Use setTimeout (no backend)
+- Ensure old reminders still work
+- Do not break existing data structure
+
+========================
+🔊 2. SFX (SOUND EFFECTS)
+========================
+
+Add sound system:
+
+- Play sound when reminder triggers
+- Add 2 sounds:
+  - alert.mp3
+  - panic.mp3
+
+Logic:
+- Play both sounds OR layered effect
+- Add volume control support (if settings exist)
+
+Ensure:
+- Works on user interaction (browser autoplay rules)
+- No console errors
+
+========================
+🌐 3. SEO SECTION ADD
+========================
+
+Add a new SEO section WITHOUT affecting current UI:
+
+Option A:
+- Create new file: seo.html
+
+OR
+
+Option B:
+- Add new section at bottom of main page
+
+Include:
+
+- SEO Title
+- Meta description
+- Keywords
+- Open Graph tags
+
+Content sections:
+- App introduction
+- Benefits of using app
+- Features list
+- Why choose this app
+- FAQs (5–6 questions)
+- Call-to-action button
+
+Use:
+- Proper H1, H2, H3 structure
+- Keyword-rich content:
+  (to-do list app, habit tracker, reminder app, productivity tool)
+
+========================
+🎨 4. UI/UX ENHANCEMENT (SAFE)
+========================
+
+Enhance design WITHOUT breaking layout:
+
+- Improve card shadows (3D depth)
+- Add smooth hover effects
+- Add subtle animations:
+  - Button hover
+  - Task complete animation
+- Improve spacing and alignment
+
+Add:
+- Soft gradient background
+- Better font hierarchy
+
+DO NOT:
+- Change layout structure
+- Remove existing elements
+
+========================
+⚙️ FINAL RULES
+========================
+
+- Keep all existing features working 100%
+- Do not remove any functionality
+- Do not break localStorage
+- Write clean, modular code
+- Add comments only where needed
+
+Goal:
+Make the app feel more premium and interactive WITHOUT changing its core behavior.

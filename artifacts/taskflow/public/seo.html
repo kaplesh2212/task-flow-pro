@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1db4a7" />
+
+    <title>Infinitodo — Free To Do List App, Habit Tracker & Reminder App</title>
+    <meta name="description" content="Infinitodo is an all-in-one productivity tool combining a powerful to do list app, habit tracker with streaks, smart reminder app, and daily planner. Free, fast, and beautifully designed." />
+    <meta name="keywords" content="to do list app, habit tracker, reminder app, productivity tool, daily planner, task manager, streak tracker" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://infinitodo.pro/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Infinitodo" />
+    <meta property="og:title" content="Infinitodo — Your To Do List, Habit Tracker & Reminder App in One" />
+    <meta property="og:description" content="Plan tasks, build habits, and never miss a reminder. The smart daily planner that keeps you focused and consistent." />
+    <meta property="og:url" content="https://infinitodo.pro/" />
+    <meta property="og:image" content="/opengraph.jpg" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Infinitodo — To Do List, Habit Tracker & Reminders" />
+    <meta name="twitter:description" content="The all-in-one productivity app for tasks, habits, and reminders." />
+    <meta name="twitter:image" content="/opengraph.jpg" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "Is Infinitodo really free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The core to do list app, habit tracker, and reminder app features are completely free to use." } },
+          { "@type": "Question", "name": "Can I use Infinitodo on mobile?", "acceptedAnswer": { "@type": "Answer", "text": "Absolutely. Infinitodo is fully responsive and works on phones, tablets, and desktop browsers." } },
+          { "@type": "Question", "name": "How does the habit tracker work?", "acceptedAnswer": { "@type": "Answer", "text": "Add the habits you want to build, check them off each day, and Infinitodo automatically calculates your streaks and your personal best." } },
+          { "@type": "Question", "name": "Will I get notified about reminders?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The reminder app shows a full-screen alert with sound so you never miss what matters." } },
+          { "@type": "Question", "name": "Does it work offline?", "acceptedAnswer": { "@type": "Answer", "text": "Infinitodo is a modern web app. Once loaded it stays responsive, and your data syncs whenever you are online." } }
+        ]
+      }
+    </script>
+
+    <style>
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: #0f172a;
+        background: #ffffff;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      a { color: #0d9488; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+      header.site {
+        position: sticky; top: 0; z-index: 10;
+        background: rgba(255,255,255,0.92);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; }
+      .brand { font-weight: 800; color: #0d9488; font-size: 20px; letter-spacing: -0.01em; }
+      .nav a.cta {
+        background: linear-gradient(135deg,#14b8a6,#0d9488);
+        color: #fff; padding: 10px 18px; border-radius: 999px; font-weight: 600; font-size: 14px;
+        box-shadow: 0 8px 20px -8px rgba(13,148,136,0.6);
+      }
+      .nav a.cta:hover { text-decoration: none; transform: translateY(-1px); }
+
+      .hero {
+        padding: 80px 0 64px;
+        background: radial-gradient(1200px 500px at 80% -20%, rgba(20,184,166,0.18), transparent 60%),
+                    radial-gradient(900px 400px at 0% 0%, rgba(244,63,94,0.10), transparent 60%);
+        text-align: center;
+      }
+      .hero h1 {
+        font-size: clamp(34px, 5vw, 56px);
+        line-height: 1.08; letter-spacing: -0.02em;
+        margin: 0 0 18px; font-weight: 800;
+      }
+      .hero h1 span { background: linear-gradient(135deg,#14b8a6,#f97316); -webkit-background-clip: text; background-clip: text; color: transparent; }
+      .hero p { font-size: clamp(16px,1.6vw,19px); color: #475569; max-width: 720px; margin: 0 auto 28px; }
+      .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+      .btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 14px 26px; border-radius: 999px; font-weight: 700; font-size: 15px;
+        transition: transform .15s ease, box-shadow .15s ease;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg,#14b8a6,#0d9488);
+        color: #fff;
+        box-shadow: 0 14px 30px -10px rgba(13,148,136,0.55);
+      }
+      .btn-primary:hover { transform: translateY(-2px); text-decoration: none; }
+      .btn-ghost { color: #0f172a; border: 1px solid #e2e8f0; background: #fff; }
+      .btn-ghost:hover { background: #f8fafc; text-decoration: none; }
+
+      section { padding: 64px 0; }
+      .section-title { text-align: center; margin: 0 0 12px; font-size: clamp(26px,3.4vw,38px); font-weight: 800; letter-spacing: -0.01em; }
+      .section-sub { text-align: center; color: #64748b; max-width: 700px; margin: 0 auto 40px; font-size: 16px; }
+
+      .grid-3 { display: grid; gap: 20px; grid-template-columns: repeat(3, minmax(0,1fr)); }
+      .card {
+        background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 26px;
+        transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+      }
+      .card:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -20px rgba(15,23,42,0.18); border-color: #cbd5e1; }
+      .card .icon { font-size: 28px; margin-bottom: 10px; }
+      .card h3 { margin: 4px 0 6px; font-size: 18px; font-weight: 700; }
+      .card p { margin: 0; color: #475569; font-size: 14.5px; }
+
+      .alt { background: #f8fafc; border-top: 1px solid #eef2f7; border-bottom: 1px solid #eef2f7; }
+
+      ul.benefits { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+      ul.benefits li {
+        background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 18px;
+        display: flex; gap: 12px; align-items: flex-start;
+      }
+      ul.benefits li::before {
+        content: "✓"; color: #14b8a6; font-weight: 800; font-size: 18px; line-height: 1.4;
+      }
+
+      .why { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 36px; align-items: center; }
+      .why .panel { background: linear-gradient(135deg,#0f766e,#134e4a); color: #fff; border-radius: 20px; padding: 28px; }
+      .why .panel h3 { margin: 0 0 8px; font-size: 22px; }
+      .why .panel p { margin: 0 0 16px; opacity: 0.9; }
+      .why .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+      .why .stats div { background: rgba(255,255,255,0.08); padding: 14px; border-radius: 12px; text-align: center; }
+      .why .stats div b { display: block; font-size: 22px; }
+      .why .stats div span { font-size: 12px; opacity: 0.85; }
+
+      details.faq {
+        background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px;
+      }
+      details.faq summary {
+        cursor: pointer; font-weight: 700; font-size: 16px; list-style: none; display: flex; justify-content: space-between; gap: 12px;
+      }
+      details.faq summary::-webkit-details-marker { display: none; }
+      details.faq summary::after { content: "+"; color: #14b8a6; font-size: 22px; line-height: 1; }
+      details.faq[open] summary::after { content: "−"; }
+      details.faq p { color: #475569; margin: 10px 0 0; }
+
+      .cta-band {
+        background: linear-gradient(135deg,#14b8a6,#0d9488);
+        color: #fff; border-radius: 24px; padding: 48px 28px; text-align: center;
+        box-shadow: 0 30px 60px -30px rgba(13,148,136,0.6);
+      }
+      .cta-band h2 { margin: 0 0 10px; font-size: clamp(24px,3.2vw,34px); }
+      .cta-band p { margin: 0 0 22px; opacity: 0.95; }
+      .cta-band .btn-primary { background: #fff; color: #0d9488; box-shadow: none; }
+
+      footer.site { padding: 32px 0 48px; color: #64748b; font-size: 14px; text-align: center; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+
+      @media (max-width: 800px) {
+        .grid-3 { grid-template-columns: 1fr; }
+        ul.benefits { grid-template-columns: 1fr; }
+        .why { grid-template-columns: 1fr; }
+        .hero { padding: 56px 0 40px; }
+        section { padding: 48px 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site">
+      <div class="container nav">
+        <div class="brand" style="display:flex; align-items:center; gap:10px;">
+          <img src="/logo.png" alt="Logo" style="width:32px; height:32px; object-fit:contain; border-radius:6px;">
+          Infinitodo
+        </div>
+        <a class="cta" href="/">Open App →</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container">
+          <h1>Your <span>To Do List</span>, <span>Habit Tracker</span> &amp; <span>Reminder App</span> — all in one</h1>
+          <p>
+            Infinitodo is the productivity tool that finally fits your day. Plan tasks, build streaks, and get smart reminders so nothing important slips. A daily planner that actually feels good to open every morning.
+          </p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="/">Start Using App →</a>
+            <a class="btn btn-ghost" href="#features">See features</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="features">
+        <div class="container">
+          <h2 class="section-title">Everything you need, nothing you don’t</h2>
+          <p class="section-sub">A clean, fast productivity tool built around the three things that actually move the needle: tasks, habits, and reminders.</p>
+          <div class="grid-3">
+            <div class="card">
+              <div class="icon">✅</div>
+              <h3>Smart To Do List App</h3>
+              <p>Capture tasks in seconds, set priorities and due dates, then watch your day come together. Tabs for today, upcoming, and completed keep things tidy.</p>
+            </div>
+            <div class="card">
+              <div class="icon">🔥</div>
+              <h3>Habit Tracker with Streaks</h3>
+              <p>Build the routines you’ve been promising yourself. Check off habits daily, grow your streak, and beat your personal best with visual progress.</p>
+            </div>
+            <div class="card">
+              <div class="icon">🔔</div>
+              <h3>Reminder App That Gets Through</h3>
+              <p>Full-screen alerts with sound so a quiet notification never costs you again. Schedule reminders for anything — meds, calls, deadlines.</p>
+            </div>
+            <div class="card">
+              <div class="icon">📊</div>
+              <h3>Daily Planner Dashboard</h3>
+              <p>See your productivity score, today’s tasks, habit progress, and streaks at a glance — your morning briefing in one place.</p>
+            </div>
+            <div class="card">
+              <div class="icon">🌗</div>
+              <h3>Light &amp; Dark Mode</h3>
+              <p>Beautiful in both themes. Switch instantly or follow your system — easy on the eyes from sunrise to deep work nights.</p>
+            </div>
+            <div class="card">
+              <div class="icon">📱</div>
+              <h3>Works Everywhere</h3>
+              <p>Mobile, tablet, desktop — Infinitodo adapts. Bottom nav on the go, full sidebar at your desk, same data and same delight.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="alt">
+        <div class="container">
+          <h2 class="section-title">Benefits you’ll feel by week one</h2>
+          <p class="section-sub">A productivity tool only matters if it changes your day. Here is what users tell us.</p>
+          <ul class="benefits">
+            <li><div><b>Less mental load.</b><br><span style="color:#64748b">Stop juggling notes, sticky pads, and scattered apps. One home for your day.</span></div></li>
+            <li><div><b>Real consistency.</b><br><span style="color:#64748b">The habit tracker rewards showing up, not perfection — streaks make it stick.</span></div></li>
+            <li><div><b>Reminders that work.</b><br><span style="color:#64748b">A full-screen alert beats a buried notification every single time.</span></div></li>
+            <li><div><b>A clearer day.</b><br><span style="color:#64748b">The dashboard shows what matters now, not the entire universe of your tasks.</span></div></li>
+            <li><div><b>Faster than a spreadsheet.</b><br><span style="color:#64748b">Add a task or habit in two clicks. No menus, no friction.</span></div></li>
+            <li><div><b>It feels good.</b><br><span style="color:#64748b">Smooth animations, satisfying sounds, and confetti when you finish — productivity with a little joy.</span></div></li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <h2 class="section-title">Why choose Infinitodo</h2>
+          <p class="section-sub">Most productivity apps either do too little or drown you in features. Infinitodo hits the sweet spot.</p>
+          <div class="why">
+            <div>
+              <p style="color:#334155; font-size:16.5px; margin-top:0">
+                We built Infinitodo for the person who has tried five other apps and keeps falling back to a paper list. It is fast enough to capture a thought before it disappears, structured enough to actually plan a week, and warm enough to want to open every morning. No bloat. No paywalled basics. Just a daily planner that respects your time and an experience that quietly makes you better.
+              </p>
+              <p style="color:#334155; font-size:16.5px">
+                Whether you need a to do list app for work, a habit tracker for your health goals, or a reminder app for your family routines — Infinitodo keeps it simple, keeps it together, and keeps you moving.
+              </p>
+            </div>
+            <div class="panel">
+              <h3>Built for real days</h3>
+              <p>Designed mobile-first, polished for desktop, and obsessive about the small details.</p>
+              <div class="stats">
+                <div><b>3-in-1</b><span>tasks · habits · reminders</span></div>
+                <div><b>0$</b><span>free to use</span></div>
+                <div><b>4.9★</b><span>user rating</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="alt">
+        <div class="container" style="max-width: 820px;">
+          <h2 class="section-title">Frequently asked questions</h2>
+          <p class="section-sub">Quick answers about Infinitodo — the to do list app, habit tracker, and reminder app in one.</p>
+
+          <details class="faq" open>
+            <summary>Is Infinitodo really free?</summary>
+            <p>Yes. The core to do list app, habit tracker, and reminder app features are completely free to use — no trial timer, no surprise paywall on the basics.</p>
+          </details>
+          <details class="faq">
+            <summary>Can I use Infinitodo on mobile?</summary>
+            <p>Absolutely. Infinitodo is fully responsive — bottom navigation on phones, a sidebar on desktop, and the same data on every device.</p>
+          </details>
+          <details class="faq">
+            <summary>How does the habit tracker work?</summary>
+            <p>Add the habits you want to build, check them off each day, and Infinitodo automatically calculates your current streak, your personal best, and how close you are to beating it.</p>
+          </details>
+          <details class="faq">
+            <summary>Will I actually get notified about my reminders?</summary>
+            <p>Yes. The reminder app shows a full-screen alert with sound when a reminder fires, so a quiet notification never costs you the meeting again.</p>
+          </details>
+          <details class="faq">
+            <summary>Does this work as a daily planner?</summary>
+            <p>That is exactly what it is built for. The dashboard combines your tasks for today, your habit check-ins, your reminders, and a productivity score — your full day on one screen.</p>
+          </details>
+          <details class="faq">
+            <summary>Is my data safe?</summary>
+            <p>Your data is stored securely and only you can see it. Infinitodo never sells data and only uses it to power your productivity tool experience.</p>
+          </details>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="cta-band">
+            <h2>Ready to plan a better day?</h2>
+            <p>Open Infinitodo and capture your first task in under 10 seconds.</p>
+            <a class="btn btn-primary" href="/">Start Using App →</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site">
+      <div class="container">
+        © <span id="y"></span> Infinitodo · To do list app · Habit tracker · Reminder app · Daily planner · Productivity tool
+      </div>
+    </footer>
+
+    <script>document.getElementById("y").textContent = new Date().getFullYear();</script>
+  </body>
+</html>

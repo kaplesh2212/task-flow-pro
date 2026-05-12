@@ -1,0 +1,660 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-border: var(--primary-border);
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary-border: var(--secondary-border);
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted-border: var(--muted-border);
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent-border: var(--accent-border);
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-border: var(--destructive-border);
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-primary-border: var(--sidebar-primary-border);
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-accent-border: var(--sidebar-accent-border);
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --font-sans: var(--app-font-sans);
+  --font-serif: var(--app-font-serif);
+  --font-mono: var(--app-font-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --animate-first: moveVertical 30s ease infinite;
+  --animate-second: moveInCircle 20s reverse infinite;
+  --animate-third: moveInCircle 40s linear infinite;
+  --animate-fourth: moveHorizontal 40s ease infinite;
+  --animate-fifth: moveInCircle 20s ease infinite;
+
+  @keyframes moveHorizontal {
+    0% {
+      transform: translateX(-50%) translateY(-10%);
+    }
+    50% {
+      transform: translateX(50%) translateY(10%);
+    }
+    100% {
+      transform: translateX(-50%) translateY(-10%);
+    }
+  }
+  @keyframes moveInCircle {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(180deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes moveVertical {
+    0% {
+      transform: translateY(-50%);
+    }
+    50% {
+      transform: translateY(50%);
+    }
+    100% {
+      transform: translateY(-50%);
+    }
+  }
+}
+
+/* LIGHT MODE */
+:root {
+  --button-outline: rgba(0, 0, 0, .10);
+  --badge-outline: rgba(0, 0, 0, .05);
+
+  /* Automatic computation of border around primary / danger buttons */
+  --opaque-button-border-intensity: -8;
+  /* In terms of percentages */
+
+  /* Backgrounds applied on top of other backgrounds when hovered/active */
+  --elevate-1: rgba(0, 0, 0, .03);
+  --elevate-2: rgba(0, 0, 0, .08);
+
+  --background: 240 25% 97%; /* Slightly more tint for better contrast with white cards */
+  --foreground: 247 57% 5%;
+
+  --border: 240 10% 88%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 247 57% 5%;
+  --card-border: 240 10% 90%;
+
+  --sidebar: 241 54% 21%; /* #1A1953 */
+  --sidebar-foreground: 0 0% 100%;
+  --sidebar-border: 241 54% 15%;
+  --sidebar-primary: 240 77% 54%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 228 74% 33%; /* #162E93 */
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-ring: 240 77% 54%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 247 57% 5%;
+  --popover-border: 240 10% 90%;
+
+  --primary: 240 77% 54%; /* #2F2FE4 */
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 228 74% 33%; /* #162E93 */
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 240 10% 94%;
+  --muted-foreground: 241 54% 35%;
+
+  --accent: 240 10% 94%;
+  --accent-foreground: 247 57% 5%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --input: 240 10% 90%;
+  --ring: 240 77% 54%;
+
+  --chart-1: 240 77% 54%;
+  --chart-2: 228 74% 33%;
+  --chart-3: 241 54% 21%;
+  --chart-4: 247 57% 5%;
+  --chart-5: 239 60% 70%;
+
+  --app-font-sans: 'Inter', sans-serif;
+  --app-font-serif: Georgia, serif;
+  --app-font-mono: Menlo, monospace;
+  --radius: 1.25rem;
+  --shadow-2xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  --shadow-xs: 0px 2px 4px 0px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0px 4px 8px 0px rgba(0, 0, 0, 0.06);
+  --shadow: 0px 8px 16px -4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0px 12px 24px -6px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0px 20px 32px -8px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0px 32px 48px -12px rgba(0, 0, 0, 0.2);
+  --shadow-2xl: 0px 48px 64px -16px rgba(0, 0, 0, 0.25);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  /* Automatically computed borders - intensity can be controlled by the user by the --opaque-button-border-intensity setting */
+
+  /* Fallback for older browsers */
+  --sidebar-primary-border: hsl(var(--sidebar-primary));
+  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --sidebar-accent-border: hsl(var(--sidebar-accent));
+  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --primary-border: hsl(var(--primary));
+  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --secondary-border: hsl(var(--secondary));
+  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --muted-border: hsl(var(--muted));
+  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --accent-border: hsl(var(--accent));
+  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Fallback for older browsers */
+  --destructive-border: hsl(var(--destructive));
+  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+}
+
+.dark {
+  --button-outline: rgba(255, 255, 255, .10);
+  --badge-outline: rgba(255, 255, 255, .05);
+
+  --opaque-button-border-intensity: 9;
+  /* In terms of percentages */
+
+  /* Backgrounds applied on top of other backgrounds when hovered/active */
+  --elevate-1: rgba(255, 255, 255, .04);
+  --elevate-2: rgba(255, 255, 255, .09);
+
+  --background: 247 57% 4%; /* Slightly deeper #060512 */
+  --foreground: 240 20% 98%;
+
+  --border: 241 54% 18%; /* Dark Purple #1A1953 but a bit lighter for visibility */
+
+  --card: 241 54% 10%; /* Deepest #0c0b26 */
+  --card-foreground: 240 20% 98%;
+  --card-border: 241 54% 15%;
+
+  --popover: 241 54% 10%;
+  --popover-foreground: 240 20% 98%;
+
+  --primary: 240 85% 65%; /* Lighter primary in dark mode for better contrast #7c7cff */
+  --primary-foreground: 240 77% 10%;
+
+  --secondary: 228 74% 45%; 
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 241 54% 15%;
+  --muted-foreground: 228 74% 75%;
+
+  --accent: 241 54% 21%;
+  --accent-foreground: 240 20% 98%;
+
+  --destructive: 0 84% 65%;
+  --destructive-foreground: 0 0% 100%;
+
+  --input: 241 54% 15%;
+  --ring: 240 85% 65%;
+
+  --chart-1: 240 85% 65%;
+  --chart-2: 228 74% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
+
+  --sidebar-background: 247 57% 4%;
+  --sidebar-foreground: 240 20% 98%;
+  --sidebar-primary: 240 85% 65%;
+  --sidebar-primary-foreground: 240 77% 10%;
+  --sidebar-accent: 241 54% 15%;
+  --sidebar-accent-foreground: 240 20% 98%;
+  --sidebar-border: 241 54% 15%;
+  --sidebar-ring: 240 85% 65%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground selection:bg-primary/20 selection:text-primary transition-colors duration-300;
+  }
+
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/20 rounded-full border-4 border-solid border-transparent bg-clip-padding transition-colors;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/40;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-card/60 backdrop-blur-md border border-card-border/50;
+  }
+
+  .glass-panel {
+    @apply bg-background/80 backdrop-blur-xl border-border/50;
+  }
+
+  .glass-primary {
+    @apply bg-primary/10 backdrop-blur-md border border-primary/20;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 15px hsl(var(--primary) / 0.5);
+  }
+
+  .shadow-glow {
+    box-shadow: 0 0 20px -5px hsl(var(--primary) / 0.3);
+  }
+
+  /* Hide ugly search cancel button in Chrome until we can style it properly */
+  input[type="search"]::-webkit-search-cancel-button {
+    @apply hidden;
+  }
+
+  /* Placeholder styling for contentEditable div */
+  [contenteditable][data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: hsl(var(--muted-foreground));
+    pointer-events: none;
+  }
+
+  .no-default-hover-elevate {}
+
+  .no-default-active-elevate {}
+
+  .toggle-elevate::before,
+  .toggle-elevate-2::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    border-radius: inherit;
+    z-index: -1;
+  }
+
+  .toggle-elevate.toggle-elevated::before {
+    background-color: var(--elevate-2);
+  }
+
+  .border.toggle-elevate::before {
+    inset: -1px;
+  }
+
+  .hover-elevate:not(.no-default-hover-elevate),
+  .active-elevate:not(.no-default-active-elevate),
+  .hover-elevate-2:not(.no-default-hover-elevate),
+  .active-elevate-2:not(.no-default-active-elevate) {
+    position: relative;
+    z-index: 0;
+  }
+
+  .hover-elevate:not(.no-default-hover-elevate)::after,
+  .active-elevate:not(.no-default-active-elevate)::after,
+  .hover-elevate-2:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:not(.no-default-active-elevate)::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    border-radius: inherit;
+    z-index: 999;
+  }
+
+  .hover-elevate:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-1);
+  }
+
+  .hover-elevate-2:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-2);
+  }
+
+  .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate-2:not(.no-active-interaction-elevate)::after {
+    inset: -1px;
+  }
+
+  /* Hourglass Loader (from Uiverse.io by nima-mollazadeh) */
+  .loader {
+    --dur: 2s;
+    --hue: 239; /* Matching primary hue */
+    display: block;
+    margin: auto;
+    width: 6em; /* Reduced size to fit inside the clock face */
+    height: auto;
+  }
+  .loader__glare-top,
+  .loader__glare-bottom,
+  .loader__model,
+  .loader__motion-thick,
+  .loader__motion-medium,
+  .loader__motion-thin,
+  .loader__sand-drop,
+  .loader__sand-fill,
+  .loader__sand-grain-left,
+  .loader__sand-grain-right,
+  .loader__sand-line-left,
+  .loader__sand-line-right,
+  .loader__sand-mound-top,
+  .loader__sand-mound-bottom {
+    animation-duration: var(--dur);
+    animation-timing-function: cubic-bezier(0.83, 0, 0.17, 1);
+    animation-iteration-count: infinite;
+  }
+  .loader__glare-top {
+    animation-name: glare-top;
+  }
+  .loader__glare-bottom {
+    animation-name: glare-bottom;
+  }
+  .loader__model {
+    animation-name: loader-flip;
+    transform-origin: 12.25px 16.75px;
+  }
+  .loader__motion-thick,
+  .loader__motion-medium,
+  .loader__motion-thin {
+    transform-origin: 26px 26px;
+  }
+  .loader__motion-thick {
+    animation-name: motion-thick;
+  }
+  .loader__motion-medium {
+    animation-name: motion-medium;
+  }
+  .loader__motion-thin {
+    animation-name: motion-thin;
+  }
+  .loader__sand-drop {
+    animation-name: sand-drop;
+  }
+  .loader__sand-fill {
+    animation-name: sand-fill;
+  }
+  .loader__sand-grain-left {
+    animation-name: sand-grain-left;
+  }
+  .loader__sand-grain-right {
+    animation-name: sand-grain-right;
+  }
+  .loader__sand-line-left {
+    animation-name: sand-line-left;
+  }
+  .loader__sand-line-right {
+    animation-name: sand-line-right;
+  }
+  .loader__sand-mound-top {
+    animation-name: sand-mound-top;
+  }
+  .loader__sand-mound-bottom {
+    animation-name: sand-mound-bottom;
+    transform-origin: 12.25px 31.5px;
+  }
+
+  @keyframes loader-flip {
+    from {
+      transform: translate(13.75px, 9.25px) rotate(-180deg);
+    }
+    24%,
+    to {
+      transform: translate(13.75px, 9.25px) rotate(0);
+    }
+  }
+  @keyframes glare-top {
+    from {
+      stroke: rgba(255, 255, 255, 0);
+    }
+    24%,
+    to {
+      stroke: white;
+    }
+  }
+  @keyframes glare-bottom {
+    from {
+      stroke: white;
+    }
+    24%,
+    to {
+      stroke: rgba(255, 255, 255, 0);
+    }
+  }
+  @keyframes motion-thick {
+    from {
+      animation-timing-function: cubic-bezier(0.33, 0, 0.67, 0);
+      stroke: rgba(255, 255, 255, 0);
+      stroke-dashoffset: 153.94;
+      transform: rotate(0.67turn);
+    }
+    20% {
+      animation-timing-function: cubic-bezier(0.33, 1, 0.67, 1);
+      stroke: rgb(32, 32, 32);
+      stroke-dashoffset: 141.11;
+      transform: rotate(1turn);
+    }
+    40%,
+    to {
+      stroke: rgba(255, 255, 255, 0);
+      stroke-dashoffset: 153.94;
+      transform: rotate(1.33turn);
+    }
+  }
+  @keyframes motion-medium {
+    from,
+    8% {
+      animation-timing-function: cubic-bezier(0.33, 0, 0.67, 0);
+      stroke: rgba(255, 255, 255, 0);
+      stroke-dashoffset: 153.94;
+      transform: rotate(0.5turn);
+    }
+    20% {
+      animation-timing-function: cubic-bezier(0.33, 1, 0.67, 1);
+      stroke: white;
+      stroke-dashoffset: 147.53;
+      transform: rotate(0.83turn);
+    }
+    32%,
+    to {
+      stroke: rgba(255, 255, 255, 0);
+      stroke-dashoffset: 153.94;
+      transform: rotate(1.17turn);
+    }
+  }
+  @keyframes motion-thin {
+    from,
+    4% {
+      animation-timing-function: cubic-bezier(0.33, 0, 0.67, 0);
+      stroke: rgba(255, 255, 255, 0);
+      stroke-dashoffset: 153.94;
+      transform: rotate(0.33turn);
+    }
+    24% {
+      animation-timing-function: cubic-bezier(0.33, 1, 0.67, 1);
+      stroke: rgb(53, 53, 53);
+      stroke-dashoffset: 134.7;
+      transform: rotate(0.67turn);
+    }
+    44%,
+    to {
+      stroke: rgba(255, 255, 255, 0);
+      stroke-dashoffset: 153.94;
+      transform: rotate(1turn);
+    }
+  }
+  @keyframes sand-drop {
+    from,
+    10% {
+      animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+      stroke-dashoffset: 1;
+    }
+    70%,
+    to {
+      stroke-dashoffset: -107;
+    }
+  }
+  @keyframes sand-fill {
+    from,
+    10% {
+      animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+      stroke-dashoffset: 55;
+    }
+    70%,
+    to {
+      stroke-dashoffset: -54;
+    }
+  }
+  @keyframes sand-grain-left {
+    from,
+    10% {
+      animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+      stroke-dashoffset: 29;
+    }
+    70%,
+    to {
+      stroke-dashoffset: -22;
+    }
+  }
+  @keyframes sand-grain-right {
+    from,
+    10% {
+      animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+      stroke-dashoffset: 27;
+    }
+    70%,
+    to {
+      stroke-dashoffset: -24;
+    }
+  }
+  @keyframes sand-line-left {
+    from,
+    10% {
+      animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+      stroke-dashoffset: 53;
+    }
+    70%,
+    to {
+      stroke-dashoffset: -55;
+    }
+  }
+  @keyframes sand-line-right {
+    from,
+    10% {
+      animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+      stroke-dashoffset: 14;
+    }
+    70%,
+    to {
+      stroke-dashoffset: -24.5;
+    }
+  }
+  @keyframes sand-mound-top {
+    from,
+    10% {
+      animation-timing-function: linear;
+      transform: translate(0, 0);
+    }
+    15% {
+      animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+      transform: translate(0, 1.5px);
+    }
+    51%,
+    to {
+      transform: translate(0, 13px);
+    }
+  }
+  @keyframes sand-mound-bottom {
+    from,
+    31% {
+      animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);
+      transform: scale(1, 0);
+    }
+    56%,
+    to {
+      transform: scale(1, 1);
+    }
+  }
+
+  .animated-gradient {
+    background: linear-gradient(-45deg, hsl(var(--primary) / 0.05), hsl(var(--background)), hsl(var(--secondary) / 0.05), hsl(var(--background)));
+    background-size: 400% 400%;
+    animation: gradient-flow 15s ease infinite;
+  }
+
+  @keyframes gradient-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+}
