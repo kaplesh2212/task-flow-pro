@@ -5,7 +5,8 @@ import { cn } from "@/lib/utils"
 import { PerspectiveCard } from "./perspective-card"
 import { ThemeToggle } from "./theme-toggle"
 import { useEffect, useState } from "react"
-import { useListReminders, getListRemindersQueryKey } from "@workspace/api-client-react"
+import { useFirebaseData } from "@/hooks/useFirebase"
+import { useAuth } from "@/context/AuthContext"
 import { ReminderAlert } from "./reminder-alert"
 import { sfx } from "@/lib/sfx"
 import { ExternalAd } from "./external-ad"
@@ -15,9 +16,8 @@ import { PlayCircle, PauseCircle, CloudDownload, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 function GlobalReminder() {
-  const { data: reminders } = useListReminders({
-    query: { queryKey: getListRemindersQueryKey(), refetchInterval: 10000 },
-  })
+  const { user } = useAuth()
+  const { data: reminders } = useFirebaseData<any>("reminders")
   const [activeAlert, setActiveAlert] = useState<{ id: string; title: string; message: string } | null>(null)
 
   useEffect(() => {
@@ -100,7 +100,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   };
 
   const navItems = [
-    { href: "/", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/tasks", label: "Tasks", icon: CheckSquare },
     { href: "/habits", label: "Habits", icon: Activity },
     { href: "/reminders", label: "Reminders", icon: Bell },
@@ -112,6 +112,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
     ...navItems,
     { href: "/settings", label: "Settings", icon: Settings },
   ]
+
+  const isLandingPage = location === "/" || location === "/landing" || location === "/about";
+
+  if (isLandingPage) {
+    return (
+      <div className="min-h-[100svh] bg-background text-foreground selection:bg-primary/30 selection:text-primary-foreground relative overflow-hidden" id="landing-layout-root">
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-[100svh] flex-col md:flex-row bg-background selection:bg-primary/30 selection:text-primary-foreground relative overflow-hidden">

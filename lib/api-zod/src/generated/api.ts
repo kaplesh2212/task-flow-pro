@@ -356,3 +356,24 @@ export const GetRecentActivityResponseItem = zod.object({
 export const GetRecentActivityResponse = zod.array(
   GetRecentActivityResponseItem,
 );
+
+/**
+ * @summary Get AI-powered productivity analysis
+ */
+export const GetAiAnalysisResponse = zod.object({
+  prodScore: zod.number(),
+  disciplineScore: zod.number(),
+  focusConsistency: zod.number(),
+  momentum: zod.string(),
+  improvement: zod.number(),
+  bestHours: zod.string(),
+  burnoutRisk: zod.string(),
+  insights: zod.array(
+    zod.object({
+      title: zod.string(),
+      message: zod.string(),
+      type: zod.enum(["surge", "focus", "recovery", "window"]),
+    }),
+  ),
+  strategyAdvice: zod.string(),
+});

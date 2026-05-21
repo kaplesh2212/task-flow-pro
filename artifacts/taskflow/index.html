@@ -1,25 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr" style="scroll-behavior: smooth;">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     
     <!-- Primary SEO -->
-    <title>Infinitodo — AI-Powered To-Do List, Habit Tracker & Focus Timer</title>
-    <meta name="description" content="Master your day with Infinitodo. The most powerful AI-driven productivity app combining a to-do list, habit tracker with streaks, and cinematic focus timer. Unlock your disciplined era today." />
-    <meta name="keywords" content="to do list app, habit tracker, productivity app, AI productivity, daily planner, task manager, focus timer, pomodoro, habit streaks, discipline app, neural sync" />
-    <meta name="author" content="Infinitodo Team" />
+    <title>Infinitodo — Free AI To-Do List, Habit Tracker & Focus Timer App | Best Productivity Tool 2026</title>
+    <meta name="description" content="Infinitodo is the #1 free AI-powered productivity app. Manage tasks with smart prioritization, build daily habits with streak tracking, set powerful reminders, and analyze your performance with AI analytics. Works on all devices. Start free today!" />
+    <meta name="keywords" content="to do list app, free to do list, habit tracker app, habit tracker with streaks, productivity app, AI productivity tool, daily planner, task manager app, focus timer, pomodoro timer, habit streaks, discipline app, best to do app, free task manager, daily habit tracker, productivity planner, time management app, goal tracker, routine tracker, AI task manager, smart to do list, free productivity app" />
+    <meta name="author" content="Infinitodo" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <link rel="canonical" href="https://infinitodo.pro/" />
-    <meta name="theme-color" content="#7c7cff" />
+    <meta name="theme-color" content="#14b8a6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="generator" content="Infinitodo v2.0" />
+    <meta name="application-name" content="Infinitodo" />
+    <meta name="rating" content="General" />
+    <meta name="referrer" content="origin-when-cross-origin" />
+    
+    <!-- Language/Locale -->
+    <link rel="alternate" hreflang="en" href="https://infinitodo.pro/" />
+    <link rel="alternate" hreflang="x-default" href="https://infinitodo.pro/" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Infinitodo" />
-    <meta property="og:title" content="Infinitodo — AI-Powered Productivity Operating System" />
-    <meta property="og:description" content="The ultimate productivity tool for elite focus. Plan tasks, build consistent habits, and analyze your performance with Neural Sync AI." />
+    <meta property="og:title" content="Infinitodo — #1 Free AI Productivity App | Task Manager & Habit Tracker" />
+    <meta property="og:description" content="The ultimate free productivity tool. AI-powered task management, daily habit tracking with streaks, cinematic reminders, and performance analytics. Join 10K+ users today." />
     <meta property="og:url" content="https://infinitodo.pro/" />
     <meta property="og:image" content="https://infinitodo.pro/og-image.png" />
+    <meta property="og:image:alt" content="Infinitodo - AI-Powered Productivity Dashboard" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_US" />
@@ -27,37 +41,145 @@
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@infinitodo" />
-    <meta name="twitter:title" content="Infinitodo — Unlock Your Disciplined Era" />
-    <meta name="twitter:description" content="AI-driven tasks, habit tracking, and deep work sessions in one beautiful interface." />
+    <meta name="twitter:creator" content="@infinitodo" />
+    <meta name="twitter:title" content="Infinitodo — Free AI Productivity App" />
+    <meta name="twitter:description" content="AI-driven tasks, habit tracking with streaks, and deep work sessions — all free, forever. Start now." />
     <meta name="twitter:image" content="https://infinitodo.pro/og-image.png" />
+    <meta name="twitter:image:alt" content="Infinitodo AI Productivity Dashboard" />
 
     <!-- PWA / Mobile -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Infinitodo" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="format-detection" content="telephone=no" />
 
-    <link rel="icon" type="image/png" href="/logo.png" />
+    <!-- Favicons & Manifest -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Fonts - Inter with full weight range for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    
+    <!-- DNS Prefetch for performance -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
 
-    <!-- Structured data -->
+    <!-- Structured Data: SoftwareApplication -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         "name": "Infinitodo",
+        "alternateName": "Infinitodo AI Productivity",
         "applicationCategory": "ProductivityApplication",
+        "applicationSubCategory": "Task Management",
         "operatingSystem": "Web, iOS, Android",
-        "description": "Infinitodo is a free productivity tool combining a to do list app, habit tracker with streaks, reminder app, and daily planner.",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "ratingCount": "1280" }
+        "description": "Infinitodo is the #1 free AI-powered productivity app combining a smart to-do list, daily habit tracker with streaks, cinematic reminders, focus timer, and AI performance analytics.",
+        "url": "https://infinitodo.pro/",
+        "screenshot": "https://infinitodo.pro/og-image.png",
+        "featureList": "AI Task Prioritization, Habit Tracking with Streaks, Full-Screen Reminders, Focus Timer, AI Performance Analytics, Cloud Sync, Dark Mode, PWA Support",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "1280",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "author": {
+          "@type": "Organization",
+          "name": "Infinitodo",
+          "url": "https://infinitodo.pro/"
+        }
+      }
+    </script>
+
+    <!-- Structured Data: WebSite (enables Google Sitelinks Search Box) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Infinitodo",
+        "alternateName": "Infinitodo Productivity",
+        "url": "https://infinitodo.pro/"
+      }
+    </script>
+
+    <!-- Structured Data: Organization -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Infinitodo",
+        "url": "https://infinitodo.pro/",
+        "logo": "https://infinitodo.pro/logo.png",
+        "sameAs": [
+          "https://t.me/babajishopingdeals"
+        ]
+      }
+    </script>
+
+    <!-- Structured Data: FAQ (helps with rich snippets in Google) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is Infinitodo truly free to use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. All core features including the task matrix, habit streaks, full-screen reminders, and focus timer are completely free with unlimited usage. No hidden subscription paywalls on your productivity basics."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does my data sync securely across devices?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Absolutely! When you sign in with Google, all your tasks, habits, and preferences sync in real-time to our secure serverless Firestore database. If offline, the app safely persists everything to local storage."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does the AI Analyser provide feedback?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The AI Analyser reads your historical completion logs, streak patterns, and time allocations to calculate an execution momentum score. It evaluates your peak focus windows, streak velocity, and generates tailored guidance."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I use Infinitodo on my mobile device?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Infinitodo is built with responsive mobile design. It adapts perfectly to all screen sizes, showing a premium bottom-nav layout on mobile and a spacious sidebar on desktop."
+            }
+          }
+        ]
       }
     </script>
   </head>
   <body>
+    <!-- Noscript fallback for SEO crawlers -->
+    <noscript>
+      <div style="padding:2rem;text-align:center;font-family:Inter,sans-serif;">
+        <h1>Infinitodo — AI-Powered Productivity App</h1>
+        <p>The #1 free productivity tool combining AI task management, habit tracking with streaks, and focus timers. Enable JavaScript to use the full app.</p>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

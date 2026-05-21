@@ -25,16 +25,8 @@ import {
   CardDescription
 } from "@/components/ui/card";
 import { AIAnalyser } from "./analytics";
-import {
-  useGetDashboardSummary,
-  useListHabits,
-  useGetWeeklyReport,
-  useGetRecentActivity,
-  getGetDashboardSummaryQueryKey,
-  getListHabitsQueryKey,
-  getGetWeeklyReportQueryKey,
-  getGetRecentActivityQueryKey
-} from "@workspace/api-client-react";
+import { useFirebaseData } from "@/hooks/useFirebase";
+import { useAuth } from "@/context/AuthContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   AreaChart,
@@ -213,18 +205,37 @@ export default function Dashboard() {
   const [showAI, setShowAI] = useState(false);
   const [userName, setUserName] = useState(() => localStorage.getItem("Infinitodo_userName") || "Productive User");
 
-  const { data: summary, isLoading: loadingSummary } = useGetDashboardSummary({
-    query: { queryKey: getGetDashboardSummaryQueryKey() },
-  });
-  const { data: habits } = useListHabits({
-    query: { queryKey: getListHabitsQueryKey() },
-  });
-  const { data: report, isLoading: loadingReport } = useGetWeeklyReport({
-    query: { queryKey: getGetWeeklyReportQueryKey() },
-  });
-  const { data: activities, isLoading: loadingActivities } = useGetRecentActivity({
-    query: { queryKey: getGetRecentActivityQueryKey() },
-  });
+  const { user } = useAuth();
+  const { data: tasks, loading: loadingTasks } = useFirebaseData<any>("tasks");
+  const { data: habits, loading: loadingHabits } = useFirebaseData<any>("habits");
+  const { data: reminders, loading: loadingReminders } = useFirebaseData<any>("reminders");
+
+  const summary = useMemo(() => {
+    if (!tasks || !habits) return null;
+    const today = new Date().toISOString().split('T')[0];
+    const tasksToday = tasks.filter((t: any) => t.createdAt?.startsWith(today));
+    const tasksCompletedToday = tasksToday.filter((t: any) => t.status === "completed");
+    const habitsCompletedToday = habits.filter((h: any) => h.completedToday);
+    
+    const tasksWeight = (tasksCompletedToday.length / Math.max(tasksToday.length, 1)) * 50;
+    const habitsWeight = (habitsCompletedToday.length / Math.max(habits.length, 1)) * 50;
+    const productivityScore = Math.round(tasksWeight + habitsWeight);
+
+    return {
+      tasksTotal: tasksToday.length,
+      tasksCompleted: tasksCompletedToday.length,
+      habitsTotal: habits.length,
+      habitsCompletedToday: habitsCompletedToday.length,
+      dailyStreak: habits.reduce((max: number, h: any) => Math.max(max, h.streak || 0), 0),
+      productivityScore
+    };
+  }, [tasks, habits]);
+
+  const report = { days: [] }; // Simplified for now
+  const activities = [];
+  const loadingSummary = loadingTasks || loadingHabits || loadingReminders;
+  const loadingReport = false;
+  const loadingActivities = false;
 
   const score = summary?.productivityScore ?? 0;
 
@@ -271,6 +282,7 @@ export default function Dashboard() {
       }, 250);
       return () => clearInterval(interval);
     }
+    return;
   }, [score]);
 
   const getScoreLabel = (s: number) => {

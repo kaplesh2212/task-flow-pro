@@ -1,14 +1,8 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  useListTasks,
-  useCreateTask,
-  useUpdateTask,
-  useDeleteTask,
-  useToggleTask,
-  getListTasksQueryKey,
-  getGetDashboardSummaryQueryKey
-} from "@workspace/api-client-react";
+import { useFirebaseData } from "@/hooks/useFirebase";
+import { useAuth } from "@/context/AuthContext";
+import { useLocation } from "wouter";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
@@ -84,6 +78,14 @@ export default function Tasks() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
+  const { user } = useAuth();
+  const { data: rawTasks, loading: isLoading, add, update, remove } = useFirebaseData<any>("tasks");
+  const [, setLocation] = useLocation();
+
+  if (!user && !isLoading) {
+    setLocation("/landing");
+    return null;
+  }
 
   const startListening = () => {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -121,15 +123,10 @@ export default function Tasks() {
     recognition.start();
   };
 
-  const { data: tasks, isLoading } = useListTasks(
-    { status: filter },
-    { query: { queryKey: getListTasksQueryKey({ status: filter }) } }
-  );
-
-  const createTask = useCreateTask();
-  const updateTask = useUpdateTask();
-  const deleteTask = useDeleteTask();
-  const toggleTask = useToggleTask();
+  const tasks = (rawTasks || []).filter(t => {
+    if (filter === "all") return true;
+    return t.status === filter;
+  });
 
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
@@ -142,85 +139,53 @@ export default function Tasks() {
     },
   });
 
-  const onSubmit = (data: TaskFormValues) => {
-    if (editingId) {
-      updateTask.mutate(
-        { id: editingId, data },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: getListTasksQueryKey() });
-            queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
-            toast.success("Task updated");
-            setIsDialogOpen(false);
-          },
-          onError: (err: any) => {
-            console.error("Update task error:", err);
-            toast.error(err.message || "Failed to update task");
-          }
-        }
-      );
-    } else {
-      createTask.mutate(
-        { data },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: getListTasksQueryKey() });
-            queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
-            toast.success("Task created");
-            setIsDialogOpen(false);
-          },
-          onError: (err: any) => {
-            console.error("Create task error:", err);
-            toast.error(err.message || "Failed to create task");
-          }
-        }
-      );
+  const onSubmit = async (data: TaskFormValues) => {
+    try {
+      if (editingId) {
+        await update(editingId, data);
+        toast.success("Task updated");
+      } else {
+        await add(data);
+        toast.success("Task created");
+      }
+      setIsDialogOpen(false);
+    } catch (err: any) {
+      console.error("Save task error:", err);
+      toast.error(err.message || "Failed to save task");
     }
   };
 
-  const handleToggle = (id: string, currentStatus: string) => {
-    if (currentStatus === "completed") return; // Once finished, no effect on clicking
+  const handleToggle = async (id: string, currentStatus: string) => {
+    if (currentStatus === "completed") return;
 
-    toggleTask.mutate(
-      { id },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: getListTasksQueryKey() });
-          queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
-          if (currentStatus === "pending") {
-            sfx.taskComplete();
-            celebrate();
-            toast.success("Task completed!", {
-              icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
-            });
-          } else {
-            sfx.click();
-          }
-        },
-        onError: (err: any) => {
-          console.error("Toggle task error:", err);
-          toast.error(err.message || "Failed to toggle task");
-        }
-      },
-    );
+    try {
+      const newStatus = currentStatus === "completed" ? "pending" : "completed";
+      await update(id, { status: newStatus, completedAt: newStatus === "completed" ? new Date().toISOString() : null });
+      
+      if (newStatus === "completed") {
+        sfx.taskComplete();
+        celebrate();
+        toast.success("Task completed!", {
+          icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
+        });
+      } else {
+        sfx.click();
+      }
+    } catch (err: any) {
+      console.error("Toggle task error:", err);
+      toast.error(err.message || "Failed to toggle task");
+    }
   };
 
-  const handleDelete = (id: string) => {
-    deleteTask.mutate(
-      { id },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: getListTasksQueryKey() });
-          queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
-          toast.success("Task deleted");
-          sfx.delete();
-        },
-        onError: (err: any) => {
-          console.error("Delete task error:", err);
-          toast.error(err.message || "Failed to delete task");
-        }
-      },
-    );
+  const handleDelete = async (id: string) => {
+    try {
+      await remove(id);
+      toast.success("Task deleted");
+      sfx.delete();
+    } catch (err: any) {
+      console.error("Delete task error:", err);
+      toast.error(err.message || "Failed to delete task");
+    }
   };
 
   const openCreate = () => {
@@ -455,7 +420,7 @@ export default function Tasks() {
               />
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-                <Button type="submit" disabled={createTask.isPending || updateTask.isPending}>
+                <Button type="submit">
                   {editingId ? "Save Changes" : "Create Task"}
                 </Button>
               </DialogFooter>

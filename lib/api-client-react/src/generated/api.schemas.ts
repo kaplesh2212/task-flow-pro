@@ -277,6 +277,33 @@ export interface ActivityItem {
   timestamp: string;
 }
 
+export type AiInsightType = (typeof AiInsightType)[keyof typeof AiInsightType];
+
+export const AiInsightType = {
+  surge: "surge",
+  focus: "focus",
+  recovery: "recovery",
+  window: "window",
+} as const;
+
+export interface AiInsight {
+  title: string;
+  message: string;
+  type: AiInsightType;
+}
+
+export interface AiAnalysis {
+  prodScore: number;
+  disciplineScore: number;
+  focusConsistency: number;
+  momentum: string;
+  improvement: number;
+  bestHours: string;
+  burnoutRisk: string;
+  insights: AiInsight[];
+  strategyAdvice: string;
+}
+
 export type ListTasksParams = {
   status?: ListTasksStatus;
   category?: string;

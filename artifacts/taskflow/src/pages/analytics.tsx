@@ -1,11 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Brain, 
-  TrendingUp, 
-  Zap, 
-  Target, 
-  Clock, 
-  ShieldCheck, 
+import {
+  Brain,
+  TrendingUp,
+  Zap,
+  Target,
+  Clock,
+  ShieldCheck,
   AlertCircle,
   Award,
   ArrowUpRight,
@@ -18,29 +18,21 @@ import {
   ChevronLeft,
   Fingerprint
 } from "lucide-react";
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
 } from "@/components/ui/card";
-import { 
-  useGetDashboardSummary, 
-  useListHabits,
-  useGetWeeklyReport,
-  getGetDashboardSummaryQueryKey,
-  getListHabitsQueryKey,
-  getGetWeeklyReportQueryKey,
-  useListTasks,
-  getListTasksQueryKey
-} from "@workspace/api-client-react";
-import { 
+import { useFirebaseData } from "@/hooks/useFirebase";
+import { useAuth } from "@/context/AuthContext";
+import {
   AreaChart,
   Area,
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer
 } from "recharts";
 import { cn } from "@/lib/utils";
@@ -88,24 +80,24 @@ const NeuralPulse = () => (
     />
     <div className="relative z-10 w-32 h-32 rounded-[2.5rem] bg-card/40 backdrop-blur-xl border border-border/50 flex items-center justify-center shadow-2xl">
       <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#00FF9D] border-4 border-background flex items-center justify-center shadow-[0_0_15px_rgba(0,255,157,0.5)]">
-        <motion.div 
-          animate={{ opacity: [1, 0.5, 1] }} 
+        <motion.div
+          animate={{ opacity: [1, 0.5, 1] }}
           transition={{ duration: 1, repeat: Infinity }}
-          className="w-2 h-2 rounded-full bg-white" 
+          className="w-2 h-2 rounded-full bg-white"
         />
       </div>
       <Brain className="w-16 h-16 text-primary drop-shadow-[0_0_10px_hsl(var(--primary)/0.5)]" />
-      
+
       {/* Neural Dots */}
-      <motion.div 
+      <motion.div
         animate={{ y: [0, -10, 0], x: [0, 10, 0] }}
         transition={{ duration: 4, repeat: Infinity }}
-        className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-primary/40 blur-[1px]" 
+        className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-primary/40 blur-[1px]"
       />
-      <motion.div 
+      <motion.div
         animate={{ y: [0, 15, 0], x: [0, -5, 0] }}
         transition={{ duration: 5, repeat: Infinity, delay: 1 }}
-        className="absolute bottom-6 left-6 w-2 h-2 rounded-full bg-primary/30 blur-[2px]" 
+        className="absolute bottom-6 left-6 w-2 h-2 rounded-full bg-primary/30 blur-[2px]"
       />
     </div>
   </div>
@@ -115,23 +107,23 @@ const Atmosphere = () => (
   <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
     <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 blur-[120px] rounded-full animate-pulse" />
     <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-500/5 dark:bg-indigo-900/10 blur-[150px] rounded-full" />
-    
+
     {/* Floating Particles */}
     {[...Array(20)].map((_, i) => (
       <motion.div
         key={i}
-        initial={{ 
-          x: Math.random() * 100 + "%", 
+        initial={{
+          x: Math.random() * 100 + "%",
           y: Math.random() * 100 + "%",
           opacity: Math.random() * 0.3
         }}
-        animate={{ 
+        animate={{
           y: ["-10%", "110%"],
           opacity: [0, 0.3, 0]
         }}
-        transition={{ 
-          duration: Math.random() * 10 + 10, 
-          repeat: Infinity, 
+        transition={{
+          duration: Math.random() * 10 + 10,
+          repeat: Infinity,
           ease: "linear",
           delay: Math.random() * 10
         }}
@@ -148,11 +140,37 @@ export function AIAnalyser({ onBack, initialView = 'card' }: { onBack?: () => vo
   const [stageIndex, setStageIndex] = useState(0);
   const [scanProgress, setScanProgress] = useState(0);
 
-  // --- Data Fetching ---
-  const { data: summary } = useGetDashboardSummary({ query: { queryKey: getGetDashboardSummaryQueryKey() } });
-  const { data: habits } = useListHabits({ query: { queryKey: getListHabitsQueryKey() } });
-  const { data: report } = useGetWeeklyReport({ query: { queryKey: getGetWeeklyReportQueryKey() } });
-  const { data: tasks } = useListTasks({ query: { queryKey: getListTasksQueryKey() } });
+  const { user } = useAuth();
+  const { data: tasks, loading: loadingTasks } = useFirebaseData<any>("tasks");
+  const { data: habits, loading: loadingHabits } = useFirebaseData<any>("habits");
+  const [, setLocation] = useLocation();
+
+  if (!user && !loadingTasks) {
+    setLocation("/landing");
+    return null;
+  }
+
+  const summary = useMemo(() => {
+    if (!tasks || !habits) return null;
+    const today = new Date().toISOString().split('T')[0];
+    const tasksToday = tasks.filter((t: any) => t.createdAt?.startsWith(today));
+    const tasksCompletedToday = tasksToday.filter((t: any) => t.status === "completed");
+    const habitsCompletedToday = habits.filter((h: any) => h.completedToday);
+    
+    const tasksWeight = (tasksCompletedToday.length / Math.max(tasksToday.length, 1)) * 50;
+    const habitsWeight = (habitsCompletedToday.length / Math.max(habits.length, 1)) * 50;
+    const productivityScore = Math.round(tasksWeight + habitsWeight);
+
+    return {
+      tasksTotal: tasksToday.length,
+      tasksCompleted: tasksCompletedToday.length,
+      habitsTotal: habits.length,
+      habitsCompletedToday: habitsCompletedToday.length,
+      productivityScore
+    };
+  }, [tasks, habits]);
+
+  const report = { days: [] }; 
 
   // --- Analysis Logic ---
   const analytics = useMemo(() => {
@@ -252,20 +270,21 @@ export function AIAnalyser({ onBack, initialView = 'card' }: { onBack?: () => vo
             setTimeout(() => setView('results'), 500);
             return 100;
           }
-          const next = prev + (100 / (STAGES.length * 15)); 
-          
+          const next = prev + (100 / (STAGES.length * 15));
+
           const stageStep = 100 / STAGES.length;
           const newStage = Math.min(Math.floor(next / stageStep), STAGES.length - 1);
           if (newStage !== currentStage) {
             currentStage = newStage;
             setStageIndex(newStage);
           }
-          
+
           return next;
         });
       }, 50);
       return () => clearInterval(interval);
     }
+    return;
   }, [view]);
 
   const handleStartAnalysis = () => {
@@ -300,7 +319,7 @@ export function AIAnalyser({ onBack, initialView = 'card' }: { onBack?: () => vo
               </CardHeader>
               <CardContent className="p-8 pt-4 flex flex-col items-center text-center space-y-8">
                 <NeuralPulse />
-                
+
                 <div className="space-y-3">
                   <h2 className="text-3xl font-black italic tracking-tighter uppercase text-foreground leading-none">
                     Neural Sync <span className="text-primary">Analyser</span>
@@ -344,7 +363,7 @@ export function AIAnalyser({ onBack, initialView = 'card' }: { onBack?: () => vo
 
             <div className="w-full space-y-6 text-center">
               <div className="space-y-1">
-                <motion.h3 
+                <motion.h3
                   key={stageIndex}
                   initial={{ y: 10, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -364,9 +383,9 @@ export function AIAnalyser({ onBack, initialView = 'card' }: { onBack?: () => vo
                   className="absolute inset-0 bg-gradient-to-r from-primary to-indigo-400"
                 />
                 <motion.div
-                   animate={{ left: ["0%", "100%", "0%"] }}
-                   transition={{ duration: 2, repeat: Infinity }}
-                   className="absolute top-0 bottom-0 w-20 bg-white/30 blur-md -skew-x-12"
+                  animate={{ left: ["0%", "100%", "0%"] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="absolute top-0 bottom-0 w-20 bg-white/30 blur-md -skew-x-12"
                 />
               </div>
 
@@ -448,44 +467,44 @@ export function AIAnalyser({ onBack, initialView = 'card' }: { onBack?: () => vo
                   </div>
                   <Activity className="w-5 h-5 text-primary opacity-30 group-hover:opacity-100 transition-opacity" />
                 </div>
-                
+
                 <div className="h-[300px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={analytics?.reportDays ?? []}>
                       <defs>
                         <linearGradient id="colorInt" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4}/>
-                          <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                          <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
+                          <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--foreground)/0.05)" />
-                      <XAxis 
-                        dataKey="date" 
-                        axisLine={false} 
-                        tickLine={false} 
-                        tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))", fontWeight: 700 }} 
+                      <XAxis
+                        dataKey="date"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))", fontWeight: 700 }}
                         dy={10}
                       />
                       <YAxis hide />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: "hsl(var(--card))", 
-                          borderRadius: '20px', 
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "hsl(var(--card))",
+                          borderRadius: '20px',
                           border: '1px solid hsl(var(--border))',
                           backdropFilter: 'blur(10px)',
                           fontSize: '11px',
                           fontWeight: 'bold',
                           color: "hsl(var(--foreground))"
-                        }} 
+                        }}
                         itemStyle={{ color: "hsl(var(--primary))" }}
                       />
-                      <Area 
-                        type="monotone" 
-                        dataKey="tasksCompleted" 
-                        stroke="hsl(var(--primary))" 
-                        strokeWidth={4} 
-                        fillOpacity={1} 
-                        fill="url(#colorInt)" 
+                      <Area
+                        type="monotone"
+                        dataKey="tasksCompleted"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth={4}
+                        fillOpacity={1}
+                        fill="url(#colorInt)"
                         animationDuration={2500}
                       />
                     </AreaChart>
@@ -516,13 +535,13 @@ export function AIAnalyser({ onBack, initialView = 'card' }: { onBack?: () => vo
                 </div>
 
                 <Card className="bg-gradient-to-br from-primary/10 to-transparent border border-border/50 p-6 rounded-[2.5rem] relative overflow-hidden group shadow-lg">
-                   <div className="absolute -right-4 -bottom-4 opacity-5 dark:opacity-10 group-hover:scale-125 transition-transform duration-700">
-                     <Brain className="w-24 h-24 text-primary" />
-                   </div>
-                   <p className="text-[10px] font-black uppercase tracking-widest text-primary/80 mb-2">Strategy Advice</p>
-                   <p className="text-sm font-bold text-foreground leading-relaxed relative z-10">
-                     "Your focus architecture thrives on <span className="text-primary italic">Deep Mornings</span>. Protect the 9 AM - 11 AM window for maximum impact."
-                   </p>
+                  <div className="absolute -right-4 -bottom-4 opacity-5 dark:opacity-10 group-hover:scale-125 transition-transform duration-700">
+                    <Brain className="w-24 h-24 text-primary" />
+                  </div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-primary/80 mb-2">Strategy Advice</p>
+                  <p className="text-sm font-bold text-foreground leading-relaxed relative z-10">
+                    "Your focus architecture thrives on <span className="text-primary italic">Deep Mornings</span>. Protect the 9 AM - 11 AM window for maximum impact."
+                  </p>
                 </Card>
               </div>
             </div>

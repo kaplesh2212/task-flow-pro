@@ -40,12 +40,27 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 import { PerspectiveCard } from "@/components/perspective-card";
+import { useAuth } from "@/context/AuthContext";
+import { LogOut } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function Settings() {
   const { theme, setTheme } = useTheme();
   const [soundOn, setSoundOn] = useState(true);
   const [userName, setUserName] = useState(() => localStorage.getItem("Infinitodo_userName") || "Productive User");
   const [accentColor, setAccentColor] = useState("blue");
+  const { user, logout } = useAuth();
+  const [, setLocation] = useLocation();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success("Logged out successfully");
+      setLocation("/landing");
+    } catch (err) {
+      toast.error("Logout failed");
+    }
+  };
 
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -276,10 +291,17 @@ export default function Settings() {
                   <Cloud className="w-5 h-5 text-emerald-500" />
                   <div className="space-y-0.5">
                     <Label className="text-xs font-bold">Cloud Sync</Label>
-                    <p className="text-[9px] text-emerald-600/70 font-bold uppercase tracking-widest">Connected</p>
+                    <p className="text-[9px] text-emerald-600/70 font-bold uppercase tracking-widest">{user ? "Connected" : "Local"}</p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" className="text-[10px] font-bold h-8">Sync Now</Button>
+                {user ? (
+                  <Button variant="ghost" size="sm" onClick={handleLogout} className="text-[10px] font-bold h-8 text-red-500 hover:text-red-600 hover:bg-red-500/10">
+                    <LogOut className="w-3 h-3 mr-1.5" />
+                    Logout
+                  </Button>
+                ) : (
+                  <Button variant="ghost" size="sm" onClick={() => setLocation("/landing")} className="text-[10px] font-bold h-8">Login</Button>
+                )}
               </div>
             </CardContent>
           </Card>

@@ -1,15 +1,8 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  useListReminders,
-  useCreateReminder,
-  useUpdateReminder,
-  useDeleteReminder,
-  useListTasks,
-  useListHabits,
-  getListRemindersQueryKey,
-  getGetDashboardSummaryQueryKey,
-} from "@workspace/api-client-react";
+import { useFirebaseData } from "@/hooks/useFirebase";
+import { useAuth } from "@/context/AuthContext";
+import { useLocation } from "wouter";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
@@ -86,16 +79,16 @@ export default function Reminders() {
     message?: string;
   }>({ open: false, title: "" });
 
-  const { data: reminders, isLoading } = useListReminders({
-    query: { queryKey: getListRemindersQueryKey() },
-  });
+  const { user } = useAuth();
+  const { data: reminders, loading: isLoading, add: createReminder, update: updateReminder, remove: deleteReminder } = useFirebaseData<any>("reminders");
+  const { data: tasks } = useFirebaseData<any>("tasks");
+  const { data: habits } = useFirebaseData<any>("habits");
+  const [, setLocation] = useLocation();
 
-  const { data: tasks } = useListTasks();
-  const { data: habits } = useListHabits();
-
-  const createReminder = useCreateReminder();
-  const updateReminder = useUpdateReminder();
-  const deleteReminder = useDeleteReminder();
+  if (!user && !isLoading) {
+    setLocation("/landing");
+    return null;
+  }
 
   const form = useForm<ReminderFormValues>({
     resolver: zodResolver(reminderSchema),
@@ -108,73 +101,44 @@ export default function Reminders() {
     },
   });
 
-  const onSubmit = (data: ReminderFormValues) => {
+  const onSubmit = async (data: ReminderFormValues) => {
     const payload = {
       ...data,
       remindAt: new Date(data.remindAt).toISOString(),
     };
-    const remindDate = new Date(data.remindAt);
-    const friendlyTime = format(remindDate, "MMM d, h:mm a");
+    const friendlyTime = format(new Date(data.remindAt), "MMM d, h:mm a");
 
-    if (editingId) {
-      updateReminder.mutate(
-        { id: editingId, data: payload },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: getListRemindersQueryKey() });
-            queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
-            toast.success("Reminder updated");
-            sfx.pop();
-            setIsDialogOpen(false);
-          },
-          onError: (err: any) => {
-            console.error("Update reminder error:", err);
-            toast.error(err.message || "Failed to update reminder");
-          },
-        },
-      );
-    } else {
-      createReminder.mutate(
-        { data: payload },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: getListRemindersQueryKey() });
-            queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
-            setIsDialogOpen(false);
-            // Trigger dramatic full-window alert + sound + confetti
-            sfx.reminderAlert();
-            celebrate();
-            setAlertState({
-              open: true,
-              title: data.title,
-              message: `Scheduled for ${friendlyTime}${data.repeat !== "none" ? ` • repeats ${data.repeat}` : ""}`,
-            });
-          },
-          onError: (err: any) => {
-            console.error("Create reminder error:", err);
-            toast.error(err.message || "Failed to create reminder");
-          },
-        },
-      );
+    try {
+      if (editingId) {
+        await updateReminder(editingId, payload);
+        toast.success("Reminder updated");
+        sfx.pop();
+      } else {
+        await createReminder(payload);
+        sfx.reminderAlert();
+        celebrate();
+        setAlertState({
+          open: true,
+          title: data.title,
+          message: `Scheduled for ${friendlyTime}${data.repeat !== "none" ? ` • repeats ${data.repeat}` : ""}`,
+        });
+      }
+      setIsDialogOpen(false);
+    } catch (err: any) {
+      console.error("Save reminder error:", err);
+      toast.error(err.message || "Failed to save reminder");
     }
   };
 
-  const handleDelete = (id: string) => {
-    deleteReminder.mutate(
-      { id },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: getListRemindersQueryKey() });
-          queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
-          toast.success("Reminder deleted");
-          sfx.delete();
-        },
-        onError: (err: any) => {
-          console.error("Delete reminder error:", err);
-          toast.error(err.message || "Failed to delete reminder");
-        },
-      },
-    );
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteReminder(id);
+      toast.success("Reminder deleted");
+      sfx.delete();
+    } catch (err: any) {
+      console.error("Delete reminder error:", err);
+      toast.error(err.message || "Failed to delete reminder");
+    }
   };
 
   const openCreate = () => {
@@ -478,12 +442,7 @@ export default function Reminders() {
                   >
                     Cancel
                   </Button>
-                  <Button
-                    type="submit"
-                    disabled={
-                      createReminder.isPending || updateReminder.isPending
-                    }
-                  >
+                  <Button type="submit">
                     {editingId ? "Save Changes" : "Create Reminder"}
                   </Button>
                 </DialogFooter>

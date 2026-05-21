@@ -14,6 +14,8 @@ import Settings from "@/pages/settings";
 import Landing from "@/pages/landing";
 import Timer from "@/pages/timer";
 import AIAnalyser from "@/pages/analytics";
+import { AuthProvider } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 const queryClient = new QueryClient();
 
@@ -21,7 +23,8 @@ function Router() {
   return (
     <Layout>
       <Switch>
-        <Route path="/" component={Dashboard} />
+        <Route path="/" component={Landing} />
+        <Route path="/dashboard" component={Dashboard} />
         <Route path="/tasks" component={Tasks} />
         <Route path="/habits" component={Habits} />
         <Route path="/reminders" component={Reminders} />
@@ -41,14 +44,16 @@ function Router() {
 function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <Router />
-          </WouterRouter>
-          <Toaster position="bottom-right" richColors closeButton />
-        </TooltipProvider>
-      </QueryClientProvider>
+      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+              <Router />
+            </WouterRouter>
+            <Toaster position="bottom-right" richColors closeButton />
+          </TooltipProvider>
+        </QueryClientProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

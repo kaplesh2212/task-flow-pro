@@ -8,6 +8,9 @@
 
 export * from "./activityItem";
 export * from "./activityItemType";
+export * from "./aiAnalysis";
+export * from "./aiInsight";
+export * from "./aiInsightType";
 export * from "./categoryCount";
 export * from "./createHabitInput";
 export * from "./createHabitInputDifficulty";

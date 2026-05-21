@@ -18,6 +18,7 @@ import type {
 
 import type {
   ActivityItem,
+  AiAnalysis,
   CreateHabitInput,
   CreateReminderInput,
   CreateTaskInput,
@@ -1685,3 +1686,84 @@ export function useGetRecentActivity<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * @summary Get AI-powered productivity analysis
+ */
+export const getGetAiAnalysisUrl = () => {
+  return `/api/ai/analyze`;
+};
+
+export const getAiAnalysis = async (
+  options?: RequestInit,
+): Promise<AiAnalysis> => {
+  return customFetch<AiAnalysis>(getGetAiAnalysisUrl(), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getGetAiAnalysisMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof getAiAnalysis>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof getAiAnalysis>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ["getAiAnalysis"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof getAiAnalysis>>,
+    void
+  > = () => {
+    return getAiAnalysis(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type GetAiAnalysisMutationResult = NonNullable<
+  Awaited<ReturnType<typeof getAiAnalysis>>
+>;
+
+export type GetAiAnalysisMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Get AI-powered productivity analysis
+ */
+export const useGetAiAnalysis = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof getAiAnalysis>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof getAiAnalysis>>,
+  TError,
+  void,
+  TContext
+> => {
+  return useMutation(getGetAiAnalysisMutationOptions(options));
+};

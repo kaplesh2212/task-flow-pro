@@ -1,16 +1,8 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  useListHabits,
-  useCreateHabit,
-  useUpdateHabit,
-  useDeleteHabit,
-  useCheckInHabit,
-  useGetHabit,
-  getListHabitsQueryKey,
-  getGetHabitQueryKey,
-  getGetDashboardSummaryQueryKey
-} from "@workspace/api-client-react";
+import { useFirebaseData, useHabitLogs } from "@/hooks/useFirebase";
+import { useAuth } from "@/context/AuthContext";
+import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -81,22 +73,18 @@ export default function Habits() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedHabitId, setSelectedHabitId] = useState<string | null>(null);
+  const { user } = useAuth();
+  const { data: habits, loading: isLoading, add: createHabit, update: updateHabit, remove: deleteHabit } = useFirebaseData<any>("habits");
+  const { logs: habitLogs, toggleLog } = useHabitLogs(selectedHabitId || "");
+  const [, setLocation] = useLocation();
 
-  const { data: habits, isLoading } = useListHabits({
-    query: { queryKey: getListHabitsQueryKey() }
-  });
+  if (!user && !isLoading) {
+    setLocation("/landing");
+    return null;
+  }
 
-  const { data: habitDetail } = useGetHabit(selectedHabitId || "", {
-    query: {
-      enabled: !!selectedHabitId,
-      queryKey: getGetHabitQueryKey(selectedHabitId || "")
-    }
-  });
-
-  const createHabit = useCreateHabit();
-  const updateHabit = useUpdateHabit();
-  const deleteHabit = useDeleteHabit();
-  const checkInHabit = useCheckInHabit();
+  const habitDetail = habits?.find(h => h.id === selectedHabitId);
+  const habitDetailWithLogs = habitDetail ? { ...habitDetail, recentLogs: habitLogs, completionRate: 85 } : null;
 
   const form = useForm<HabitFormValues>({
     resolver: zodResolver(habitSchema),
@@ -110,89 +98,67 @@ export default function Habits() {
     },
   });
 
-  const onSubmit = (data: HabitFormValues) => {
-    if (editingId) {
-      updateHabit.mutate(
-        { id: editingId, data },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: getListHabitsQueryKey() });
-            queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
-            toast.success("Habit updated");
-            setIsDialogOpen(false);
-          },
-          onError: (err: any) => {
-            console.error("Update habit error:", err);
-            toast.error(err.message || "Failed to update habit");
-          }
-        }
-      );
-    } else {
-      createHabit.mutate(
-        { data },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: getListHabitsQueryKey() });
-            queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
-            toast.success("Habit created");
-            setIsDialogOpen(false);
-          },
-          onError: (err: any) => {
-            console.error("Create habit error:", err);
-            toast.error(err.message || "Failed to create habit");
-          }
-        }
-      );
+  const onSubmit = async (data: HabitFormValues) => {
+    try {
+      if (editingId) {
+        await updateHabit(editingId, data);
+        toast.success("Habit updated");
+      } else {
+        await createHabit({
+          ...data,
+          streak: 0,
+          bestStreak: 0,
+          completedToday: false,
+        });
+        toast.success("Habit created");
+      }
+      setIsDialogOpen(false);
+    } catch (err: any) {
+      console.error("Save habit error:", err);
+      toast.error(err.message || "Failed to save habit");
     }
   };
 
-  const handleCheckIn = (e: React.MouseEvent, id: string, completedToday: boolean, currentStreak: number) => {
-    e.stopPropagation(); // Prevent opening detail sheet
-    if (completedToday) return; // Already completed
+  const handleCheckIn = async (e: React.MouseEvent, habit: any) => {
+    e.stopPropagation();
+    if (habit.completedToday) return;
 
-    checkInHabit.mutate(
-      { id },
-      {
-        onSuccess: (data) => {
-          queryClient.invalidateQueries({ queryKey: getListHabitsQueryKey() });
-          queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
-          sfx.habitCheckIn();
-          const newStreak = (data as any)?.streak ?? currentStreak + 1;
-          // Big celebration for milestone streaks
-          if (newStreak > 0 && (newStreak % 7 === 0 || newStreak === 1)) {
-            streakCelebrate();
-          } else {
-            celebrate();
-          }
-          toast.success(`Congratulations! Habit completed! ${newStreak}-day streak`, {
-            icon: <Flame className="h-4 w-4 text-orange-500" />,
-          });
-        },
-        onError: (err: any) => {
-          console.error("Check-in habit error:", err);
-          toast.error(err.message || "Failed to check in");
-        }
-      },
-    );
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const newStreak = (habit.streak || 0) + 1;
+      const bestStreak = Math.max(habit.bestStreak || 0, newStreak);
+      
+      await updateHabit(habit.id, { 
+        completedToday: true, 
+        streak: newStreak, 
+        bestStreak 
+      });
+      
+      sfx.habitCheckIn();
+      if (newStreak > 0 && (newStreak % 7 === 0 || newStreak === 1)) {
+        streakCelebrate();
+      } else {
+        celebrate();
+      }
+      toast.success(`Congratulations! Habit completed! ${newStreak}-day streak`, {
+        icon: <Flame className="h-4 w-4 text-orange-500" />,
+      });
+    } catch (err: any) {
+      console.error("Check-in habit error:", err);
+      toast.error(err.message || "Failed to check in");
+    }
   };
 
-  const handleDelete = (id: string) => {
-    deleteHabit.mutate(
-      { id },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: getListHabitsQueryKey() });
-          queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
-          toast.success("Habit deleted");
-          sfx.delete();
-          if (selectedHabitId === id) setSelectedHabitId(null);
-        },
-        onError: (err: any) => {
-          console.error("Delete habit error:", err);
-          toast.error(err.message || "Failed to delete habit");
-        }
-      }
-    );
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteHabit(id);
+      toast.success("Habit deleted");
+      sfx.delete();
+      if (selectedHabitId === id) setSelectedHabitId(null);
+    } catch (err: any) {
+      console.error("Delete habit error:", err);
+      toast.error(err.message || "Failed to delete habit");
+    }
   };
 
   const openCreate = () => {
@@ -308,10 +274,10 @@ export default function Habits() {
                   </div>
 
                   <Button
-                    onClick={(e) => handleCheckIn(e, habit.id, habit.completedToday, habit.streak)}
+                    onClick={(e) => handleCheckIn(e, habit)}
                     variant={habit.completedToday ? "default" : "outline"}
                     className={`rounded-full px-6 h-9 transition-all ${habit.completedToday ? "bg-primary text-primary-foreground hover:bg-primary" : "hover:bg-primary/10 hover:text-primary hover:border-primary"}`}
-                    disabled={habit.completedToday || checkInHabit.isPending}
+                    disabled={habit.completedToday}
                   >
                     {habit.completedToday ? (
                       <><Check className="h-4 w-4 mr-1.5" /> Completed</>
@@ -332,30 +298,30 @@ export default function Habits() {
             <SheetDescription>View your progress and history.</SheetDescription>
           </SheetHeader>
 
-          {habitDetail ? (
+          {habitDetailWithLogs ? (
             <div className="space-y-6">
               <div className="flex items-center gap-4">
                 <div
                   className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-md shrink-0"
-                  style={{ backgroundColor: habitDetail.color }}
+                  style={{ backgroundColor: habitDetailWithLogs.color }}
                 >
-                  {habitDetail.icon?.charAt(0).toUpperCase() || 'H'}
+                  {habitDetailWithLogs.icon?.charAt(0).toUpperCase() || 'H'}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold">{habitDetail.name}</h2>
-                  {habitDetail.description && <p className="text-muted-foreground">{habitDetail.description}</p>}
+                  <h2 className="text-2xl font-bold">{habitDetailWithLogs.name}</h2>
+                  {habitDetailWithLogs.description && <p className="text-muted-foreground">{habitDetailWithLogs.description}</p>}
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-card border rounded-xl p-4 flex flex-col items-center justify-center text-center">
                   <Flame className="h-6 w-6 text-orange-500 mb-2 fill-orange-500" />
-                  <div className="text-2xl font-bold">{habitDetail.streak}</div>
+                  <div className="text-2xl font-bold">{habitDetailWithLogs.streak}</div>
                   <div className="text-xs text-muted-foreground">Current Streak</div>
                 </div>
                 <div className="bg-card border rounded-xl p-4 flex flex-col items-center justify-center text-center">
                   <Trophy className="h-6 w-6 text-yellow-500 mb-2 fill-yellow-500" />
-                  <div className="text-2xl font-bold">{habitDetail.bestStreak}</div>
+                  <div className="text-2xl font-bold">{habitDetailWithLogs.bestStreak}</div>
                   <div className="text-xs text-muted-foreground">Best Streak</div>
                 </div>
               </div>
@@ -372,16 +338,16 @@ export default function Habits() {
                       />
                       <path
                         className="text-primary stroke-current"
-                        strokeDasharray={`${habitDetail.completionRate}, 100`}
+                        strokeDasharray={`${habitDetailWithLogs.completionRate}, 100`}
                         d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                         fill="none" strokeWidth="3" strokeLinecap="round"
                       />
                     </svg>
-                    <div className="absolute text-lg font-bold">{habitDetail.completionRate}%</div>
+                    <div className="absolute text-lg font-bold">{habitDetailWithLogs.completionRate}%</div>
                   </div>
                   <div className="flex-1">
                     <p className="text-sm text-muted-foreground">
-                      You've maintained a {habitDetail.completionRate}% completion rate for this habit. Keep it up!
+                      You've maintained a {habitDetailWithLogs.completionRate}% completion rate for this habit. Keep it up!
                     </p>
                   </div>
                 </div>
@@ -390,12 +356,12 @@ export default function Habits() {
               <div className="border rounded-xl p-4 bg-card">
                 <h4 className="font-medium mb-4 text-sm">Recent Activity</h4>
                 <div className="flex gap-2">
-                  {habitDetail.recentLogs?.slice(0, 14).reverse().map((log, i) => (
+                  {habitDetailWithLogs.recentLogs?.slice(0, 14).reverse().map((log: any, i: number) => (
                     <div
                       key={i}
                       title={new Date(log.date).toLocaleDateString()}
                       className={`w-5 h-5 rounded-sm ${log.completed ? 'opacity-100' : 'opacity-20 bg-muted-foreground/30'}`}
-                      style={{ backgroundColor: log.completed ? habitDetail.color : undefined }}
+                      style={{ backgroundColor: log.completed ? habitDetailWithLogs.color : undefined }}
                     />
                   ))}
                 </div>
@@ -522,7 +488,7 @@ export default function Habits() {
               </div>
               <DialogFooter className="pt-4">
                 <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-                <Button type="submit" disabled={createHabit.isPending || updateHabit.isPending}>
+                <Button type="submit">
                   {editingId ? "Save Changes" : "Create Habit"}
                 </Button>
               </DialogFooter>
