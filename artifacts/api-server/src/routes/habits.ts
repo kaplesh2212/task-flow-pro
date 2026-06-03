@@ -5,7 +5,7 @@ import {
   habitsTable,
   habitLogsTable,
   type HabitRow,
-} from "../../../lib/db/src/index.js";
+} from "@workspace/db";
 import {
   ListHabitsResponse,
   CreateHabitBody,
@@ -17,7 +17,7 @@ import {
   DeleteHabitParams,
   CheckInHabitParams,
   CheckInHabitResponse,
-} from "../../../lib/api-zod/src/index.js";
+} from "@workspace/api-zod";
 import { computeStreak, dateNDaysAgoISO, todayISO } from "../lib/dates";
 
 const router = Router();

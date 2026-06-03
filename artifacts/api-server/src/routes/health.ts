@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { HealthCheckResponse } from "../../../lib/api-zod/src/index.js";
-import { db, tasksTable } from "../../../lib/db/src/index.js";
+import { HealthCheckResponse } from "@workspace/api-zod";
+import { db, tasksTable } from "@workspace/db";
 import { sql } from "drizzle-orm";
 
 const router = Router();

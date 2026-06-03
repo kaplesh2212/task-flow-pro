@@ -6,12 +6,12 @@ import {
   habitsTable,
   habitLogsTable,
   remindersTable,
-} from "../../../lib/db/src/index.js";
+} from "@workspace/db";
 import {
   GetDashboardSummaryResponse,
   GetWeeklyReportResponse,
   GetRecentActivityResponse,
-} from "../../../lib/api-zod/src/index.js";
+} from "@workspace/api-zod";
 import { computeStreak, dayLabel, lastNDates, todayISO } from "../lib/dates";
 
 const router = Router();

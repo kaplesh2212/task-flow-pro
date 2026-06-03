@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { and, desc, eq } from "drizzle-orm";
-import { db, tasksTable, type TaskRow } from "../../../lib/db/src/index.js";
+import { db, tasksTable, type TaskRow } from "@workspace/db";
 import {
   ListTasksQueryParams,
   ListTasksResponse,
@@ -13,7 +13,7 @@ import {
   DeleteTaskParams,
   ToggleTaskParams,
   ToggleTaskResponse,
-} from "../../../lib/api-zod/src/index.js";
+} from "@workspace/api-zod";
 
 const router = Router();
 

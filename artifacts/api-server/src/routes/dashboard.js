@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { and, desc, eq, gte, sql } from "drizzle-orm";
-import { db, tasksTable, habitsTable, habitLogsTable, remindersTable, } from "../../../lib/db/src/index.js";
-import { GetDashboardSummaryResponse, GetWeeklyReportResponse, GetRecentActivityResponse, } from "../../../lib/api-zod/src/index.js";
+import { db, tasksTable, habitsTable, habitLogsTable, remindersTable, } from "@workspace/db";
+import { GetDashboardSummaryResponse, GetWeeklyReportResponse, GetRecentActivityResponse, } from "@workspace/api-zod";
 import { computeStreak, dayLabel, lastNDates, todayISO } from "../lib/dates";
 const router = Router();
 router.get("/dashboard/summary", async (_req, res) => {

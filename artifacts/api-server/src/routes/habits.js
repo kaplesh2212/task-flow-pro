@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { and, desc, eq, gte, sql } from "drizzle-orm";
-import { db, habitsTable, habitLogsTable, } from "../../../lib/db/src/index.js";
-import { ListHabitsResponse, CreateHabitBody, GetHabitParams, GetHabitResponse, UpdateHabitParams, UpdateHabitBody, UpdateHabitResponse, DeleteHabitParams, CheckInHabitParams, CheckInHabitResponse, } from "../../../lib/api-zod/src/index.js";
+import { db, habitsTable, habitLogsTable, } from "@workspace/db";
+import { ListHabitsResponse, CreateHabitBody, GetHabitParams, GetHabitResponse, UpdateHabitParams, UpdateHabitBody, UpdateHabitResponse, DeleteHabitParams, CheckInHabitParams, CheckInHabitResponse, } from "@workspace/api-zod";
 import { computeStreak, dateNDaysAgoISO, todayISO } from "../lib/dates";
 const router = Router();
 async function getStreakInfo(habitId) {

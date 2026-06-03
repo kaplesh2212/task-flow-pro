@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { and, desc, eq } from "drizzle-orm";
-import { db, tasksTable } from "../../../lib/db/src/index.js";
-import { ListTasksQueryParams, ListTasksResponse, CreateTaskBody, GetTaskParams, GetTaskResponse, UpdateTaskParams, UpdateTaskBody, UpdateTaskResponse, DeleteTaskParams, ToggleTaskParams, ToggleTaskResponse, } from "../../../lib/api-zod/src/index.js";
+import { db, tasksTable } from "@workspace/db";
+import { ListTasksQueryParams, ListTasksResponse, CreateTaskBody, GetTaskParams, GetTaskResponse, UpdateTaskParams, UpdateTaskBody, UpdateTaskResponse, DeleteTaskParams, ToggleTaskParams, ToggleTaskResponse, } from "@workspace/api-zod";
 const router = Router();
 function serialize(t) {
     return {

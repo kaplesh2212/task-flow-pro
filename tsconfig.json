@@ -15,5 +15,5 @@
       "@workspace/*": ["artifacts/*", "lib/*"]
     }
   },
-  "include": ["api/**/*.ts", "artifacts/**/*.ts", "lib/**/*.ts"]
+  "include": ["api/**/*.ts", "artifacts/api-server/**/*.ts", "lib/**/*.ts"]
 }

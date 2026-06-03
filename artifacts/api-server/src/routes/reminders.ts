@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { asc, eq } from "drizzle-orm";
-import { db, remindersTable, type ReminderRow } from "../../../lib/db/src/index.js";
+import { db, remindersTable, type ReminderRow } from "@workspace/db";
 import {
   ListRemindersResponse,
   CreateReminderBody,
@@ -8,7 +8,7 @@ import {
   UpdateReminderParams,
   UpdateReminderBody,
   UpdateReminderResponse,
-} from "../../../lib/api-zod/src/index.js";
+} from "@workspace/api-zod";
 
 const router = Router();
 

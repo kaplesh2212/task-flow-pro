@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { asc, eq } from "drizzle-orm";
-import { db, remindersTable } from "../../../lib/db/src/index.js";
-import { ListRemindersResponse, CreateReminderBody, DeleteReminderParams, UpdateReminderParams, UpdateReminderBody, UpdateReminderResponse, } from "../../../lib/api-zod/src/index.js";
+import { db, remindersTable } from "@workspace/db";
+import { ListRemindersResponse, CreateReminderBody, DeleteReminderParams, UpdateReminderParams, UpdateReminderBody, UpdateReminderResponse, } from "@workspace/api-zod";
 const router = Router();
 function serialize(r) {
     return {
